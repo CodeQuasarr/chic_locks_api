@@ -19,6 +19,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->bind(
+            \App\Interfaces\Auth\LoginServiceInterface::class,
+            \App\Services\Auth\LoginService::class
+        );
+
+        $this->app->bind(
+            \App\Interfaces\Auth\TokenServiceInterface::class,
+            \App\Services\Auth\TokenService::class
+        );
     }
 }
