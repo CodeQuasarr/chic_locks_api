@@ -5,6 +5,15 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
 ##-------------------------COMMAND-------------------------------##
 
+interface:
+	$(CONSOLE) make:interface interfaces/$(ARGS)
+
+interface:
+	$(CONSOLE) make:class Repositories/$(ARGS)
+
+service:
+	$(CONSOLE) make:class Services/$(ARGS)
+
 controller:
 	$(CONSOLE) make:controller $(ARGS)
 
