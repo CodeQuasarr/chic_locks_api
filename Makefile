@@ -1,52 +1,58 @@
 ##-------------------------VARIABLES-----------------------------##
 
 CONSOLE = php artisan
-ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 
 ##-------------------------COMMAND-------------------------------##
 
 interface:
-	$(CONSOLE) make:interface Interfaces/$(ARGS)
+	@$(CONSOLE) make:interface Interfaces/$(name)
 
 repository:
-	$(CONSOLE) make:class Repositories/$(ARGS)
+	@$(CONSOLE) make:class Repositories/$(name)
 
 service:
-	$(CONSOLE) make:class Services/$(ARGS)
+	@$(CONSOLE) make:class Services/$(name)
 
 trait:
-	$(CONSOLE) make:class Traits/$(ARGS)
+	@$(CONSOLE) make:class Traits/$(name)
 
 controller:
-	$(CONSOLE) make:controller Api/V1/$(ARGS)
+	@$(CONSOLE) make:controller Api/V1/$(name)
 
 request:
-	$(CONSOLE) make:request $(ARGS)
+	@$(CONSOLE) make:request $(name)
 
 test:
-	$(CONSOLE) make:test $(ARGS)
+	@$(CONSOLE) make:test $(name)
 
 migration:
-	$(CONSOLE) make:migration $(ARGS)
+	@$(CONSOLE) make:migration $(name)
 
 migrate:
-	$(CONSOLE) migrate
+	@$(CONSOLE) migrate
 
 rollback:
-	$(CONSOLE) migrate:rollback
+	@$(CONSOLE) migrate:rollback
 
 seed:
-	$(CONSOLE) db:seed
+	@$(CONSOLE) db:seed
 
 clear:
-	$(CONSOLE) cache:clear
-	$(CONSOLE) config:clear
-	$(CONSOLE) route:clear
-	$(CONSOLE) view:clear
+	@$(CONSOLE) cache:clear
+    @$(CONSOLE) config:clear
+    @$(CONSOLE) route:clear
+    @$(CONSOLE) view:clear
+
+command:
+	@$(CONSOLE) make:command $(name)
+
+model:
+	@$(CONSOLE) make:model $(name)
+
 ##-------------------------HELP---------------------------------##
 
 help:
-	@echo "Usage: make [command]"
+	@echo "Usage: make [command] [name]"
 	@echo ""
 	@echo "Available commands:"
 	@echo "  interface [name]       Create a new interface"
@@ -62,7 +68,16 @@ help:
 	@echo "  seed                   Seed the database with records"
 	@echo "  clear                  Clear the cache, config, route and view"
 	@echo "  help                   Display this help message"
-	@echo ""
+	@echo "  command [name]         Create a new command"
+	@echo "  model [name]           Create a new model"
+
 ##-------------------------PHONY---------------------------------##
-## Empêche Make d’interpréter les arguments comme des cibles
-.PHONY: interface repository service trait controller request test
+
+.PHONY: interface repository service trait controller request test migration migrate rollback seed clear command model help
+
+##-------------------------VARIABLES FOR NAMES-----------------##
+
+name = $(word 2, $(MAKECMDGOALS))
+
+##-------------------------DEFAULT TARGET----------------------##
+default: help
