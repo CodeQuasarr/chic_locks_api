@@ -28,5 +28,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\Auth\TokenServiceInterface::class,
             \App\Services\Auth\TokenService::class
         );
+
+        $this->app->bind(
+            \App\Interfaces\Auth\RegisterServiceInterface::class,
+            \App\Services\Auth\RegisterService::class
+        );
     }
 }

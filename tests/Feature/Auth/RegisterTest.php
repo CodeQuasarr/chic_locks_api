@@ -3,12 +3,16 @@
 use App\Models\User;
 
 test('user can register with valid data', function () {
-    $user = User::factory()->make([
+    $credentials = [
+        'name' => 'John Doe',
+        'email' => 'test@exemple.fr',
         'password' => 'password',
         'password_confirmation' => 'password',
-    ]);
+    ];
 
-    $response = $this->post(route('user.register'), $user->toArray());
+    $response = $this->post(route('user.register'), $credentials, [
+        'Accept' => 'application/json',
+    ]);
 
     $response
         ->assertStatus(201)
@@ -16,12 +20,16 @@ test('user can register with valid data', function () {
 });
 
 test('user cannot register with invalid data', function () {
-    $user = User::factory()->make([
+    $credentials = [
+        'name' => 'John Doe',
+        'email' => 'test@exemple.fr',
         'password' => 'password',
         'password_confirmation' => 'password123',
-    ]);
+    ];
 
-    $response = $this->post(route('user.register'), $user->toArray());
+    $response = $this->post(route('user.register'), $credentials, [
+        'Accept' => 'application/json',
+    ]);
 
     $response
         ->assertStatus(422)
@@ -33,16 +41,18 @@ test('user cannot register with existing email', function () {
     $existingUser = User::factory()->create([
         'email' => 'existe@exemple.fr',
         'password' => 'password',
-        'password_confirmation' => 'password',
     ]);
 
-    $user = User::factory()->make([
-        'email' => 'existe@exemple.fr',
+    $credentials = [
+        'name' => 'John Doe',
+        'email' => 'test@exemple.fr',
         'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+        'password_confirmation' => 'password123',
+    ];
 
-    $response = $this->post(route('user.register'), $user->toArray());
+    $response = $this->post(route('user.register'),  $credentials, [
+        'Accept' => 'application/json',
+    ]);
 
     $response
         ->assertStatus(422)
