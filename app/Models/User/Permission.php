@@ -8,6 +8,7 @@ use \Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
+    protected $fillable = ['name', 'description', 'guard_name'];
     public const READ_MY_PROFILE = 'read_my_profile';
     public const UPDATE_MY_PROFILE = 'update_my_profile';
     public const DELETE_MY_PROFILE = 'delete_my_profile';
@@ -20,15 +21,15 @@ class Permission extends SpatiePermission
 
     public static function static_getPermissions(): SupportCollection {
         return new Collection([
-            self::READ_MY_PROFILE => __("permissions.permission_names.read_my_profile"),
-            self::UPDATE_MY_PROFILE => __("permissions.permission_names.update_my_profile"),
-            self::DELETE_MY_PROFILE => __("permissions.permission_names.delete_my_profile"),
+            self::READ_MY_PROFILE => __("user.permissions.permission_names.read_my_profile"),
+            self::UPDATE_MY_PROFILE => __("user.permissions.permission_names.update_my_profile"),
+            self::DELETE_MY_PROFILE => __("user.permissions.permission_names.delete_my_profile"),
 
-            self::READ_USERS => __("permissions.permission_names.read_users"),
-            self::CREATE_USERS => __("permissions.permission_names.create_users"),
-            self::UPDATE_USERS => __("permissions.permission_names.update_users"),
-            self::DELETE_USERS => __("permissions.permission_names.delete_users"),
-            self::FORCE_DELETE_USERS => __("permissions.permission_names.force_delete_users"),
+            self::READ_USERS => __("user.permissions.permission_names.read_users"),
+            self::CREATE_USERS => __("user.permissions.permission_names.create_users"),
+            self::UPDATE_USERS => __("user.permissions.permission_names.update_users"),
+            self::DELETE_USERS => __("user.permissions.permission_names.delete_users"),
+            self::FORCE_DELETE_USERS => __("user.permissions.permission_names.force_delete_users"),
         ]);
     }
 

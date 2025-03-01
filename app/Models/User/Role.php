@@ -7,6 +7,8 @@ use \Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole
 {
+
+    protected $fillable = ['name', 'description', 'guard_name'];
     public const ADMIN = "administrator";
     public const MODERATOR = "moderator";
     public const CLIENT = "client";
@@ -15,9 +17,9 @@ class Role extends SpatieRole
     public static function static_getRoles(): Collection
     {
         return new Collection([
-            self::ADMIN => __("Administrateur"),
-            self::MODERATOR         => __("Modérateur"),
-            self::CLIENT        => __("Client"),
+            self::ADMIN => __("user.role_names.administrator"),
+            self::MODERATOR         => __("user.role_names.moderator"),
+            self::CLIENT        => __("user.role_names.client"),
         ]);
     }
 }
