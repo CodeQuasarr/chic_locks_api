@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 abstract class BaseService
 {
@@ -25,5 +26,20 @@ abstract class BaseService
             }
         }
         return $fields;
+    }
+
+    /**
+     * @description Truncate a table with foreign key checks disabled and re-enabling them afterwards. This is useful for truncating tables
+
+     * @param $table
+     * @return bool
+     */
+    private function truncate($table): bool
+    {
+        if (DB::getDefaultConnection() === 'mysql') {
+            DB::table($table)->truncate();
+            return true;
+        }
+        return false;
     }
 }

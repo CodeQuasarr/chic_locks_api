@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(\App\Models\User::class, \App\Policies\User\UserPolicy::class);
+
         $this->app->bind(
             \App\Interfaces\Auth\LoginServiceInterface::class,
             \App\Services\Auth\LoginService::class
