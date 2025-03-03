@@ -37,5 +37,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\Auth\RegisterServiceInterface::class,
             \App\Services\Auth\RegisterService::class
         );
+
+        $this->app->bind(
+            \App\Interfaces\User\UserServiceInterface::class,
+            \App\Services\User\UserService::class
+        );
     }
 }
