@@ -1,58 +1,77 @@
 <?php
 
-
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use function Pest\Laravel\post;
 
-describe('User Creation Test', function () {
+uses(RefreshDatabase::class);
 
-    beforeEach(function () {
-        Artisan::call('update:roles-permissions');
-        // Création des utilisateurs avant chaque test
-        $this->admin = User::factory()->admin()->create();
-        $this->moderator = User::factory()->moderator()->create();
-        $this->client = User::factory()->client()->create();
-    });
+beforeEach(function () {
+    // init roles and permissions
+    Artisan::call('update:roles-permissions');
 
-    test('Admin User Can Create User', function () {
+    $this->admin = User::factory()->admin()->create();
+    $this->client = User::factory()->client()->create();
+    $this->moderator = User::factory()->moderator()->create();
 
-        $user = User::factory()->make()->toArray();
-        $user['password'] = 'password';
-        $user['password_confirmation'] = 'password';
+    $this->userData = User::factory()->make()->toArray();
+    $this->userData['password'] = 'password';
+    $this->userData['password_confirmation'] = 'password';
+});
 
-        Sanctum::actingAs($this->admin);
+test('admin user can create a user', function () {
+    Sanctum::actingAs($this->admin);
 
-        $this->post(route('users.store'), $user)
-            ->assertStatus(ResponseAlias::HTTP_CREATED);
+    $response = post(route('users.store'), $this->userData, [
+        'Accept' => 'application/json',
+    ]);
 
-        $this->assertDatabaseHas('users', [
-            'email' => $user['email'],
-        ]);
-    });
+    $response->assertStatus(ResponseAlias::HTTP_CREATED);
+    $this->assertDatabaseHas('users', [
+        'email' => $this->userData['email'],
+    ]);
+});
 
-    test('prevents a client from creating a user', function () {
-        $user = User::factory()->make()->toArray();
-        $user['password'] = 'password';
-        $user['password_confirmation'] = 'password';
+test('Admin user can not create a user with invalid data', function () {
+    Sanctum::actingAs($this->admin);
 
-        Sanctum::actingAs($this->client);
+    $this->userData['email'] = 'invalid-email';
 
-        $this->post(route('users.store'), $user)
-            ->assertStatus(403);
+    $response = post(route('users.store'), $this->userData, [
+        'Accept' => 'application/json',
+    ]);
 
-    });
+    $response->assertStatus(ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+    $this->assertDatabaseMissing('users', [
+        'email' => $this->userData['email'],
+    ]);
+});
+test('moderator user cannot create a user', function () {
+    Sanctum::actingAs($this->moderator);
 
-    test('prevents a moderator from creating a user', function () {
-        $user = User::factory()->make()->toArray();
-        $user['password'] = 'password';
-        $user['password_confirmation'] = 'password';
+    $response = post(route('users.store'), $this->userData, [
+        'Accept' => 'application/json',
+    ]);
 
-        Sanctum::actingAs($this->moderator);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+    $this->assertDatabaseMissing('users', [
+        'email' => $this->userData['email'],
+    ]);
+});
 
-        $this->post(route('users.store'), $user)
-            ->assertStatus(403);
+test('non-admin user cannot create a user', function () {
+    Sanctum::actingAs($this->client);
 
-    });
+    $response = post(route('users.store'), $this->userData, [
+        'Accept' => 'application/json',
+    ]);
+
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+    $this->assertDatabaseMissing('users', [
+        'email' => $this->userData['email'],
+    ]);
 });
