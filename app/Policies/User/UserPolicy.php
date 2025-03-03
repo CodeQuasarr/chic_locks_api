@@ -15,7 +15,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('read_users', 'api');
+        return $user->hasRole([Role::ADMIN, Role::MODERATOR]);
     }
 
     /**
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole([Role::ADMIN]);
     }
 
     /**

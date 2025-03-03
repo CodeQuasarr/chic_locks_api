@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\user;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\UserCollection;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', $request->user());
-        return response()->json(User::all());
+        return response()->json(new UserCollection(User::all()));
     }
 
     /**
@@ -24,7 +25,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        Gate::authorize('create', $request->user());
+        try {
+            User::create($request->all());
+
+            return response()->json([
+                'message' => 'User created successfully',
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
     }
 
     /**
