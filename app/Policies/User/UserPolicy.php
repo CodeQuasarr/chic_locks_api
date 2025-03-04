@@ -70,7 +70,15 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return false;
+        if ($user->hasRole([Role::MODERATOR])) {
+            return false;
+        }
+
+        if ($user->hasRole([Role::CLIENT])) {
+            return $user->getKey() === $model->getKey();
+        }
+
+        return $user->hasRole([Role::ADMIN]);
     }
 
     /**
@@ -78,7 +86,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return false;
+        return $user->hasRole([Role::ADMIN]);
     }
 
     /**
@@ -86,6 +94,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return false;
+        return $user->hasRole([Role::ADMIN]);
     }
 }

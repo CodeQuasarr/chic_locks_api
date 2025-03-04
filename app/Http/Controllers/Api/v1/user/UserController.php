@@ -75,8 +75,20 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function delete(User $user): JsonResponse
     {
-        //
+        Gate::authorize('delete', $user);
+        $user->delete();
+        return ApiResponse::success(['message' => 'User deleted successfully']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(User $user): JsonResponse
+    {
+        Gate::authorize('forceDelete', $user);
+        $user->forceDelete();
+        return ApiResponse::success(['message' => 'User deleted successfully']);
     }
 }

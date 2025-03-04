@@ -8,4 +8,5 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::apiResource('users', UserController::class);
+    Route::delete('users/{user}', [UserController::class, 'delete'])->name('users.delete');
 });
