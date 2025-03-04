@@ -23,6 +23,19 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
+        if ($user->hasRole([Role::ADMIN])) {
+            return true;
+        }
+
+        if ($user->hasRole([Role::MODERATOR]) ) {
+            return !$model->hasRole([Role::ADMIN]);
+        }
+
+        if ($user->hasRole([Role::CLIENT])) {
+            return !$model->hasRole([Role::MODERATOR, Role::ADMIN])
+                && $user->getKey() === $model->getKey();
+        }
+
         return false;
     }
 

@@ -8,4 +8,6 @@ interface UserServiceInterface
 {
 
     public function create(array $data): User;
+
+    public function showById(int $id): User;
 }

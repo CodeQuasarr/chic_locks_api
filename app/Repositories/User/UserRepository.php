@@ -32,4 +32,12 @@ class UserRepository
     {
         return $this->user->create($data);
     }
+
+    /**
+     * Find a user by ID.
+     */
+    public function getById(int $id): ?User
+    {
+        return $this->user->find($id);
+    }
 }

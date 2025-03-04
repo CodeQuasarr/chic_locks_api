@@ -45,7 +45,7 @@ describe('Managing user information', function () {
 
         // Essayer d'accéder aux informations de l'admin (devrait échouer)
         $response = $this->get(route('users.show', $this->admin->id));
-        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 
     test('client can access only their own information', function () {
@@ -57,6 +57,6 @@ describe('Managing user information', function () {
 
         // Essayer d'accéder aux informations d'un autre utilisateur (devrait échouer)
         $response = $this->get(route('users.show', $this->admin->id));
-        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 });

@@ -8,8 +8,11 @@ use App\Models\User\Role;
 use App\Repositories\User\UserRepository;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserService extends BaseService implements UserServiceInterface
 {
@@ -32,6 +35,23 @@ class UserService extends BaseService implements UserServiceInterface
             throw new RuntimeException('Un problème est survenu lors de la création de l\'utilisateur.', 500);
         }
         DB::commit();
+        return $user;
+    }
+
+    /**
+     * Récupérer un utilisateur par ID avec vérification d'autorisation.
+     */
+    public function showById(int $id): User
+    {
+        $user = $this->userRepository->getById($id);
+
+        if (!$user) {
+            throw new ModelNotFoundException("User not found", Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérification des permissions avec Policy
+        Gate::authorize('view', $user);
+
         return $user;
     }
 }

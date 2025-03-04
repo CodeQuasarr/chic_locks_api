@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\v1\user;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
 use App\Interfaces\User\UserServiceInterface;
 use App\Models\User;
 use App\Models\User\Role;
+use App\Responses\ApiResponse;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +20,9 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly UserServiceInterface $userCreationService
-    ) {}
+    )
+    {
+    }
 
     /**
      * Display a listing of the resource.
@@ -32,32 +36,30 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserStoreRequest $request): JsonResponse
+    public function store(UserStoreRequest $request): JsonResponse|UserResource
     {
         Gate::authorize('create', $request->user());
-        try {
-            $user = $this->userCreationService->create($request->all());
 
-            $user->roles()->attach(Role::query()->where('name', Role::CLIENT)->first()->id);
+        $user = $this->userCreationService->create($request->all());
+        $user
+            ->roles()
+            ->attach(
+                Role::query()
+                    ->where('name', Role::CLIENT)
+                    ->first()
+                    ->id
+            );
 
-
-            return response()->json([
-                'message' => 'User created successfully',
-                'user' => $user,
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
+        return ApiResponse::success(new UserResource($user));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show($id): JsonResponse|UserResource
     {
-        //
+        $user = $this->userCreationService->showById($id);
+        return ApiResponse::success(new UserResource($user));
     }
 
     /**
