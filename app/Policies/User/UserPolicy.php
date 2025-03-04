@@ -52,7 +52,17 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return false;
+        if ($user->hasRole([Role::ADMIN])) {
+            return true;
+        }
+
+        if ($user->hasRole([Role::MODERATOR])) {
+            return !$model->hasRole([Role::ADMIN]);
+        }
+
+        if ($user->hasRole([Role::CLIENT])) {
+            return $user->getKey() === $model->getKey();
+        }
     }
 
     /**

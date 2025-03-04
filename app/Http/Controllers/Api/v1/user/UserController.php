@@ -10,8 +10,6 @@ use App\Interfaces\User\UserServiceInterface;
 use App\Models\User;
 use App\Models\User\Role;
 use App\Responses\ApiResponse;
-use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -36,7 +34,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserStoreRequest $request): JsonResponse|UserResource
+    public function store(UserStoreRequest $request): JsonResponse
     {
         Gate::authorize('create', $request->user());
 
@@ -56,7 +54,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id): JsonResponse|UserResource
+    public function show(int $id): JsonResponse
     {
         $user = $this->userCreationService->showById($id);
         return ApiResponse::success(new UserResource($user));
@@ -65,9 +63,13 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): JsonResponse
     {
-        //
+        Gate::authorize('update', $user);
+
+        $user = $this->userCreationService->update($request->all(), $user);
+
+        return ApiResponse::success(new UserResource($user));
     }
 
     /**

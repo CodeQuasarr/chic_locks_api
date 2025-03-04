@@ -10,4 +10,6 @@ interface UserServiceInterface
     public function create(array $data): User;
 
     public function showById(int $id): User;
+
+    public function update(array $data, User $user): User;
 }

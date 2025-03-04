@@ -54,4 +54,23 @@ class UserService extends BaseService implements UserServiceInterface
 
         return $user;
     }
+
+    public function update(array $data, User $user): User
+    {
+        $fields = $this->getModelFields($user, collect($data));
+
+        if ($fields->has('password')) {
+            $fields->put('password', Hash::make($fields->get('password')));
+        }
+        DB::beginTransaction();
+        $success = $this->userRepository->update($fields->toArray(), $user);
+
+        if (!$success) {
+            DB::rollBack();
+            throw new RuntimeException('Un problème est survenu lors de la mise à jour de l\'utilisateur.', 500);
+        }
+
+        DB::commit();
+        return $user;
+    }
 }

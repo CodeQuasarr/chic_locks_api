@@ -40,4 +40,12 @@ class UserRepository
     {
         return $this->user->find($id);
     }
+
+    /**
+     * Update a user.
+     */
+    public function update(array $data, User $user): bool
+    {
+        return $user->update($data);
+    }
 }
