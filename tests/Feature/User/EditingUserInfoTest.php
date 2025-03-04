@@ -15,7 +15,7 @@ describe('Editing user information', function () {
         $this->client = User::factory()->client()->create();
         $this->moderator = User::factory()->moderator()->create();
 
-        $this->userData = User::factory()->make()->toArray();
+        $this->userData['name'] = 'John Doe';
         $this->userData['password'] = 'password';
         $this->userData['password_confirmation'] = 'password';
     });
@@ -23,11 +23,11 @@ describe('Editing user information', function () {
     test('admin can edit their own information and other users information', function () {
         Sanctum::actingAs($this->admin);
 
-        $response = $this->put(route('users.update', $this->admin->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->client->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_OK);
     });
 
@@ -35,15 +35,15 @@ describe('Editing user information', function () {
         Sanctum::actingAs($this->moderator);
 
 
-        $response = $this->put(route('users.update', $this->moderator->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->moderator->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->client->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->admin->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 
@@ -51,11 +51,11 @@ describe('Editing user information', function () {
         Sanctum::actingAs($this->client);
 
 
-        $response = $this->put(route('users.update', $this->client->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->admin->id), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 });
