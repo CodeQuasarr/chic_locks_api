@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -46,7 +45,7 @@ class LoginRequest extends FormRequest
 
         if (!$user || !password_verify($password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
-            throw new RuntimeException("Invalid credentials", 401);
+            throw new RuntimeException(__("auth.failed"), 401);
         }
 
         RateLimiter::clear($this->throttleKey());
