@@ -11,7 +11,7 @@ Route::get('/greeting/{locale}', function (string $locale) {
     }
     App::setLocale($locale);
     return;
-});
+})->name('greeting');
 
 Route::get('/sanctum/csrf-cookie', function (Request $request) {
     return response()->json(['message' => 'CSRF cookie set']);

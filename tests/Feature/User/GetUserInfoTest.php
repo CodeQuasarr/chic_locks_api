@@ -24,11 +24,17 @@ describe('Managing user information', function () {
         Sanctum::actingAs($this->admin);
 
         // Accéder aux informations de l'admin lui-même
-        $response = $this->get(route('users.show', $this->admin->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->admin->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
         // Accéder aux informations d'un autre utilisateur
-        $response = $this->get(route('users.show', $this->client->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->client->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
     });
 
@@ -36,15 +42,24 @@ describe('Managing user information', function () {
         Sanctum::actingAs($this->moderator);
 
         // Accéder aux informations du modérateur lui-même
-        $response = $this->get(route('users.show', $this->moderator->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->moderator->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
         // Accéder aux informations d'un autre utilisateur (client)
-        $response = $this->get(route('users.show', $this->client->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->client->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
         // Essayer d'accéder aux informations de l'admin (devrait échouer)
-        $response = $this->get(route('users.show', $this->admin->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->admin->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 
@@ -52,11 +67,17 @@ describe('Managing user information', function () {
         Sanctum::actingAs($this->client);
 
         // Accéder aux informations du client lui-même
-        $response = $this->get(route('users.show', $this->client->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->client->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
         // Essayer d'accéder aux informations d'un autre utilisateur (devrait échouer)
-        $response = $this->get(route('users.show', $this->admin->id));
+        $response = $this->get(
+            route('users.show', ['user' => $this->admin->getKey()]),
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 });

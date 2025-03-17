@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
-describe('Editing user information', function () {
 
     beforeEach(function () {
         // init roles and permissions
@@ -23,27 +22,46 @@ describe('Editing user information', function () {
     test('admin can edit their own information and other users information', function () {
         Sanctum::actingAs($this->admin);
 
-        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->admin->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->client->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
     });
 
     test('moderator can edit their own information and other users information but not admin information', function () {
         Sanctum::actingAs($this->moderator);
 
-
-        $response = $this->put(route('users.update', $this->moderator->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->moderator->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->client->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->admin->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
 
@@ -51,11 +69,18 @@ describe('Editing user information', function () {
         Sanctum::actingAs($this->client);
 
 
-        $response = $this->put(route('users.update', $this->client->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->client->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_OK);
 
 
-        $response = $this->put(route('users.update', $this->admin->getKey()), $this->userData, ['Accept' => 'application/json']);
+        $response = $this->put(
+            route('users.update', ['user' => $this->admin->getKey()]),
+            $this->userData,
+            ['Accept' => 'application/json', 'Accept-Language' => 'en']
+        );
         $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     });
-});

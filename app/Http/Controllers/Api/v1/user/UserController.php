@@ -48,7 +48,7 @@ class UserController extends Controller
                     ->id
             );
 
-        return ApiResponse::success(new UserResource($user));
+        return ApiResponse::success(new UserResource($user), 201);
     }
 
     /**
@@ -79,7 +79,12 @@ class UserController extends Controller
     {
         Gate::authorize('delete', $user);
         $user->delete();
-        return ApiResponse::success(['message' => 'User deleted successfully']);
+        return ApiResponse::success([
+            'data' => null,
+            'meta' => [
+                'message' => 'User deleted successfully'
+            ]
+        ], 200);
     }
 
     /**

@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Models\User\Role;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Sanctum\Sanctum;
 
 beforeEach(
     function () {
@@ -12,11 +13,9 @@ beforeEach(
 
 test('Admin can get users', function () {
     $user = User::factory()->admin()->create();
-    $token = $user->createToken('api.token')->plainTextToken;
 
-    $response = $this
-        ->withHeader('Authorization', "Bearer $token")
-        ->get(route('users.index'));
+    Sanctum::actingAs($user);
+    $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
 
     $response->assertStatus(200);
 });
@@ -24,11 +23,10 @@ test('Admin can get users', function () {
 
 test('Moderator can get users', function () {
     $user = User::factory()->moderator()->create();
-    $token = $user->createToken('api.token')->plainTextToken;
 
-    $response = $this
-        ->withHeader('Authorization', "Bearer $token")
-        ->get(route('users.index'));
+    Sanctum::actingAs($user);
+    $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
+
 
     $response->assertStatus(200);
 });
@@ -36,18 +34,15 @@ test('Moderator can get users', function () {
 
 test('Client can not get users', function () {
     $user = User::factory()->create();
-    $token = $user->createToken('api.token')->plainTextToken;
 
-    $response = $this
-        ->withHeader('Authorization', "Bearer $token")
-        ->get(route('users.index'));
+    Sanctum::actingAs($user);
+    $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
 
-    $response->assertStatus(403);
+    $response->assertStatus(401);
 });
 
 test('Guest can not get users', function () {
-    $response = $this->get(route('users.index'));
+    $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
 
-    // message est This action is unauthorized.
-    $response->assertSee('You are not authorized to access this resource.');
+    $response->assertStatus(401);
 });

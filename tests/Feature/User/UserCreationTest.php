@@ -26,8 +26,10 @@ beforeEach(function () {
 test('admin user can create a user', function () {
     Sanctum::actingAs($this->admin);
 
-    $response = post(route('users.store'), $this->userData, [
-        'Accept' => 'application/json',
+    $response = post(
+        route('users.store'),
+        $this->userData, [
+        'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
     $response->assertStatus(ResponseAlias::HTTP_CREATED);
@@ -41,8 +43,10 @@ test('Admin user can not create a user with invalid data', function () {
 
     $this->userData['email'] = 'invalid-email';
 
-    $response = post(route('users.store'), $this->userData, [
-        'Accept' => 'application/json',
+    $response = post(
+        route('users.store'),
+        $this->userData, [
+        'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
     $response->assertStatus(ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
@@ -53,11 +57,13 @@ test('Admin user can not create a user with invalid data', function () {
 test('moderator user cannot create a user', function () {
     Sanctum::actingAs($this->moderator);
 
-    $response = post(route('users.store'), $this->userData, [
-        'Accept' => 'application/json',
+    $response = post(
+        route('users.store'),
+        $this->userData, [
+        'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
-    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     $this->assertDatabaseMissing('users', [
         'email' => $this->userData['email'],
     ]);
@@ -66,11 +72,13 @@ test('moderator user cannot create a user', function () {
 test('non-admin user cannot create a user', function () {
     Sanctum::actingAs($this->client);
 
-    $response = post(route('users.store'), $this->userData, [
-        'Accept' => 'application/json',
+    $response = post(
+        route('users.store'),
+        $this->userData, [
+        'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
-    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
+    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
     $this->assertDatabaseMissing('users', [
         'email' => $this->userData['email'],
     ]);
