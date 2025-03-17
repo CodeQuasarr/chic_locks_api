@@ -43,4 +43,18 @@ class TokenService implements TokenServiceInterface
             throw new RuntimeException('Invalid or missing credentials', Response::HTTP_UNAUTHORIZED);
         }
     }
+
+    public function refreshAccessToken(string $refreshToken): array
+    {
+        $tokenModel = $this->validateRefreshToken($refreshToken);
+        $this->deleteExpiredToken($tokenModel);
+
+        $user = $tokenModel->tokenable;
+        $newToken = $this->generateToken($user, 'access_token');
+
+        return [
+            'token' => $newToken,
+            'user' => $user,
+        ];
+    }
 }

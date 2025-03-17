@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Gate;
 class UserController extends Controller
 {
     public function __construct(
-        private readonly UserServiceInterface $userCreationService
+        private readonly UserServiceInterface $userService
     )
     {
     }
@@ -38,7 +38,7 @@ class UserController extends Controller
     {
         Gate::authorize('create', $request->user());
 
-        $user = $this->userCreationService->create($request->all());
+        $user = $this->userService->createUser($request->all());
         $user
             ->roles()
             ->attach(
@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $user = $this->userCreationService->showById($id);
+        $user = $this->userService->showUserById($id);
         return ApiResponse::success(new UserResource($user));
     }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
     {
         Gate::authorize('update', $user);
 
-        $user = $this->userCreationService->update($request->all(), $user);
+        $user = $this->userService->updateUser($request->all(), $user);
 
         return ApiResponse::success(new UserResource($user));
     }

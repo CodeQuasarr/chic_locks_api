@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\User\Role;
 use App\Repositories\User\UserRepository;
 use App\Services\BaseService;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,25 @@ class UserService extends BaseService implements UserServiceInterface
     )
     {}
 
-    public function create(array $data): User
+    /**
+     * @description Get user by email
+     *
+     * @param string $email
+     * @return User
+     * @throws AuthenticationException
+     */
+    public function getUserByEmail(string $email): User
+    {
+        $user = $this->userRepository->findByEmail($email);
+
+        if (!$user) {
+            throw new AuthenticationException(__("auth.failed"));
+        }
+
+        return $user;
+    }
+
+    public function createUser(array $data): User
     {
         $fields = $this->getModelFields($this->userRepository->getInstanceOfUser(), collect($data));
         $fields->put('password', Hash::make($fields->get('password')));
@@ -41,7 +60,7 @@ class UserService extends BaseService implements UserServiceInterface
     /**
      * Récupérer un utilisateur par ID avec vérification d'autorisation.
      */
-    public function showById(int $id): User
+    public function showUserById(int $id): User
     {
         $user = $this->userRepository->getById($id);
 
@@ -55,7 +74,7 @@ class UserService extends BaseService implements UserServiceInterface
         return $user;
     }
 
-    public function update(array $data, User $user): User
+    public function updateUser(array $data, User $user): User
     {
         $fields = $this->getModelFields($user, collect($data));
 

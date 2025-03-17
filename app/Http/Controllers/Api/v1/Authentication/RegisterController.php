@@ -9,6 +9,7 @@ use App\Interfaces\Auth\LoginServiceInterface;
 use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Interfaces\Auth\TokenServiceInterface;
 use App\Models\User\Role;
+use App\Responses\ApiResponse;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -31,21 +32,28 @@ class RegisterController extends Controller
      */
     public function store(RegisterRequest $request): JsonResponse
     {
-        try {
-            DB::beginTransaction();
-            $user = $this->registerService->register($request->all());
-            event(new Registered($user));
-
-            $user->assignRole(Role::CLIENT);
-            DB::commit();
-            return response()->json([
-                'message' => 'User registered. Please verify your email address.',
-            ], 201);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
+        $user = $this->registerService->register($request->all());
+        event(new Registered($user));
+        $user->assignRole(Role::CLIENT);
+        return ApiResponse::success([
+            "data" => [
+                "type" => "users",
+                "id" => $user->getKey(),
+                "attributes" => [
+                    "first_name" => "John",
+                    "last_name" => "Doe",
+                    "email" => "john.doe@example.com",
+                    "created_at" => "2025-03-16T12:34:56Z",
+                    "updated_at" => "2025-03-16T12:34:56Z",
+                    "confirmation_status" => "pending"
+                ],
+                "links" => [
+                    "self" => "/users/123"
+                ]
+            ],
+            "meta" => [
+                "message" => "Utilisateur créé. Veuillez confirmer votre email pour activer votre compte."
+            ]
+        ],  201);
     }
 }

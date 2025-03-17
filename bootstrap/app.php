@@ -9,9 +9,11 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,4 +55,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $exception, Request $request) {
             return ApiResponse::error( $exception->getMessage(), 'UNAUTHENTICATED', Response::HTTP_UNAUTHORIZED );
         });
+
+        $exceptions->render(function (ConflictHttpException $exception, Request $request) {
+            return ApiResponse::error( $exception->getMessage(), 'CONFLICT', Response::HTTP_CONFLICT );
+        });
+
+        $exceptions->render(function (ThrottleRequestsException $exception, Request $request) {
+            return ApiResponse::error( $exception->getMessage(), 'TOO_MANY_REQUESTS', Response::HTTP_TOO_MANY_REQUESTS );
+        });
+
+        // 400 Bad Request
+        $exceptions->render(function (Exception $exception, Request $request) {
+            return ApiResponse::error( $exception->getMessage(), 'BAD_REQUEST', Response::HTTP_BAD_REQUEST );
+        });
+
     })->create();
