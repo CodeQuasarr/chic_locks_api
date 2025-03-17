@@ -12,7 +12,7 @@ class ApiResponse
      */
     public static function success(mixed $data, int $status = Response::HTTP_OK): JsonResponse
     {
-        return response()->json(['data' => $data], $status);
+        return response()->json($data, $status);
     }
 
     /**
@@ -20,17 +20,18 @@ class ApiResponse
      */
     public static function error(string $detail, string $code, int $status): JsonResponse
     {
+
         return response()->json([
             'errors' => [
-                [
-                    'status' => (string) $status,
-                    'code' => $code,
-                    'title' => Response::$statusTexts[$status] ?? 'Error',
-                    'detail' => $detail,
-                    'meta' => [
-                        'timestamp' => now()->toISOString()
-                    ]
-                ]
+                'status' => (string)$status,
+                'code' => $code,
+                'title' => Response::$statusTexts[$status] ?? 'Error',
+                'detail' => $detail,
+
+            ],
+            "meta" => [
+                "message" => "L'authentification a échoué",
+                'timestamp' => now()->toISOString()
             ]
         ], $status);
     }

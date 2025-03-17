@@ -1,39 +1,43 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+
+beforeEach(function () {
+    // init roles and permissions
+    Artisan::call('update:roles-permissions');
+
+    $this->userData = User::factory()->make()->toArray();
+    $this->userData['password'] = 'password';
+    $this->userData['password_confirmation'] = 'password';
+});
 
 test('user can register with valid data', function () {
-    $credentials = [
-        'name' => 'John Doe',
-        'email' => 'test@exemple.fr',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ];
 
-    $response = $this->post(route('user.register'), $credentials, [
-        'Accept' => 'application/json',
-    ]);
+    $response = $this->post(
+        route('user.register'),
+        $this->userData,
+        ['Accept' => 'application/json', 'Accept-Language' => 'en']
+    );
 
     $response
         ->assertStatus(201)
-        ->assertJsonStructure(['message']);
+        ->assertJsonStructure(['data', 'meta']);
 });
 
 test('user cannot register with invalid data', function () {
-    $credentials = [
-        'name' => 'John Doe',
-        'email' => 'test@exemple.fr',
-        'password' => 'password',
-        'password_confirmation' => 'password123',
-    ];
 
-    $response = $this->post(route('user.register'), $credentials, [
-        'Accept' => 'application/json',
-    ]);
+    $this->userData['password_confirmation'] = 'password123';
+
+    $response = $this->post(
+        route('user.register'),
+        $this->userData,
+        ['Accept' => 'application/json', 'Accept-Language' => 'en']
+    );
 
     $response
         ->assertStatus(422)
-        ->assertJsonStructure(['message', 'errors']);
+        ->assertJsonStructure(['errors', 'meta']);
 });
 
 test('user cannot register with existing email', function () {
@@ -45,16 +49,18 @@ test('user cannot register with existing email', function () {
 
     $credentials = [
         'name' => 'John Doe',
-        'email' => 'test@exemple.fr',
+        'email' => 'existe@exemple.fr',
         'password' => 'password',
         'password_confirmation' => 'password123',
     ];
 
-    $response = $this->post(route('user.register'),  $credentials, [
-        'Accept' => 'application/json',
-    ]);
+    $response = $this->post(
+        route('user.register'),
+        $credentials,
+        ['Accept' => 'application/json', 'Accept-Language' => 'en']
+    );
 
     $response
         ->assertStatus(422)
-        ->assertJsonStructure(['message', 'errors']);
+        ->assertJsonStructure(['errors', 'meta']);
 });
