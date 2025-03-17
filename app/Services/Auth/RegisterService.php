@@ -6,14 +6,16 @@ use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Models\User;
 use App\Repositories\User\UserRepository;
 use App\Services\BaseService;
+use App\Services\User\UserService;
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class RegisterService extends BaseService implements RegisterServiceInterface
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly UserService $userService,
+    )
     {}
 
     /**
@@ -25,18 +27,12 @@ class RegisterService extends BaseService implements RegisterServiceInterface
      */
     public function register(array $data): User
     {
-        $fields = $this->getModelFields($this->userRepository->getInstanceOfUser(), collect($data));
-        $fields->put('password', Hash::make($fields->get('password')));
+        $userExists = $this->userRepository->findByEmail($data['email']);
 
-        DB::beginTransaction();
-        $user = $this->userRepository->create($fields->toArray());
-
-        if (!$user) {
-            DB::rollBack();
-            throw new RuntimeException('Un problème est survenu lors de la création de l\'utilisateur.', 500);
+        if ($userExists) {
+            throw new ConflictHttpException('Cet email est déjà utilisé.');
         }
 
-        DB::commit();
-        return $user;
+        return $this->userService->createUser($data);
     }
 }

@@ -7,9 +7,18 @@ use App\Models\User;
 interface UserServiceInterface
 {
 
-    public function create(array $data): User;
 
-    public function showById(int $id): User;
+    /**
+     * @description Get user by email
+     *
+     * @param string $email
+     * @return User
+     */
+    public function getUserByEmail(string $email): User;
 
-    public function update(array $data, User $user): User;
+    public function createUser(array $data): User;
+
+    public function showUserById(int $id): User;
+
+    public function updateUser(array $data, User $user): User;
 }

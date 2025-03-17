@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Auth;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -37,7 +39,7 @@ class LoginRequest extends FormRequest
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @throws ValidationException
+     * @throws Exception
      */
     public function authenticate($user, $password): void
     {
@@ -45,7 +47,7 @@ class LoginRequest extends FormRequest
 
         if (!$user || !password_verify($password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
-            throw new RuntimeException(__("auth.failed"), 401);
+            throw new AuthenticationException(__("auth.failed"));
         }
 
         RateLimiter::clear($this->throttleKey());
@@ -66,7 +68,7 @@ class LoginRequest extends FormRequest
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
-        throw new RuntimeException("Too many login attempts. Please try again in $seconds seconds.", 429);
+        throw new ThrottleRequestsException("Too many login attempts. Please try again in $seconds seconds.");
     }
 
     /**
