@@ -21,8 +21,7 @@ class RegisterController extends Controller
     public function __construct(
         private readonly RegisterServiceInterface $registerService,
     )
-    {
-    }
+    {}
 
     /**
      * @description Authenticate user
@@ -40,11 +39,8 @@ class RegisterController extends Controller
                 "type" => "users",
                 "id" => $user->getKey(),
                 "attributes" => [
-                    "first_name" => "John",
-                    "last_name" => "Doe",
-                    "email" => "john.doe@example.com",
-                    "created_at" => "2025-03-16T12:34:56Z",
-                    "updated_at" => "2025-03-16T12:34:56Z",
+                    "name" => $user->name,
+                    "email" => $user->email,
                     "confirmation_status" => "pending"
                 ],
                 "links" => [

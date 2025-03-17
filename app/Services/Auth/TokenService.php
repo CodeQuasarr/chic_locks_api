@@ -44,17 +44,12 @@ class TokenService implements TokenServiceInterface
         }
     }
 
-    public function refreshAccessToken(string $refreshToken): array
+    public function refreshAccessToken(string $refreshToken): string
     {
         $tokenModel = $this->validateRefreshToken($refreshToken);
         $this->deleteExpiredToken($tokenModel);
 
         $user = $tokenModel->tokenable;
-        $newToken = $this->generateToken($user, 'access_token');
-
-        return [
-            'token' => $newToken,
-            'user' => $user,
-        ];
+        return $this->generateToken($user, 'access_token');
     }
 }

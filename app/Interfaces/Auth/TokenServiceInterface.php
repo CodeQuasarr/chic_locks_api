@@ -16,5 +16,5 @@ interface TokenServiceInterface
 
     public function deleteExpiredToken(PersonalAccessToken $tokenModel): void;
 
-    public function refreshAccessToken(string $refreshToken): array;
+    public function refreshAccessToken(string $refreshToken): string;
 }

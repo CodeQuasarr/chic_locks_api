@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\v1\Authentication;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Interfaces\Auth\LoginServiceInterface;
 use App\Interfaces\Auth\TokenServiceInterface;
 use App\Interfaces\User\UserServiceInterface;
 use App\Responses\ApiResponse;
@@ -66,10 +65,48 @@ class LoginController extends Controller
             );
     }
 
+    public function me(Request $request): JsonResponse
+    {
+
+        $user = $request->user();
+
+        return ApiResponse::success([
+            'data' => [
+                'type' => 'users',
+                'id' => $user->getKey(),
+                'attributes' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->getRoleNames(),
+                ],
+                'links' => [
+                    'self' => 'users/' . $user->getKey()
+                ]
+            ],
+            'meta' => [
+                'message' => 'Utilisateur authentifié'
+            ]
+        ], 200);
+    }
+
     public function refresh(Request $request): JsonResponse
     {
         $refreshToken = $request->cookie('refresh_token');
-        $userAndAccessToken = $this->tokenService->refreshAccessToken($refreshToken);
-        return ApiResponse::success(['token' => $userAndAccessToken['token'], 'user' => $userAndAccessToken['user']], 200);
+        $accessToken = $this->tokenService->refreshAccessToken($refreshToken);
+        return ApiResponse::success([
+            'data' => [
+                "type" => "tokens",
+                "id" => "jwt_token_abc123xyz",
+                "attributes" => [
+                    "token" => $accessToken,
+                ],
+                "links" => [
+                    "self" => "/auth/login"
+                ]
+            ],
+            "meta" => [
+                "message" => "Authentification réussie"
+            ]
+        ], 200);
     }
 }
