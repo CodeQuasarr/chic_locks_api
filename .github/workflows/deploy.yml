@@ -11,53 +11,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, pdo, sqlite
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, pdo, sqlite
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Update .env for Testing
-        run: |
-          echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
-          echo "CACHE_DRIVER=array" >> .env
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Create SQLite Database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
+    - name: Generate Application Key
+      run: php artisan key:generate
 
+    - name: Set Permissions
+      run: chmod -R 777 storage bootstrap/cache
 
-      - name: Install Dependencies
-        run: composer install --no-progress --prefer-dist
+    - name: Create SQLite Database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
 
-      - name: Dump Autoload
-        run: composer dump-autoload -o
-      - name: Clear Laravel Cache
-        run: |
-          php artisan config:clear
-          php artisan cache:clear
-          php artisan route:clear
-          php artisan view:clear
-          php artisan clear-compiled
+    - name: Clear Laravel Cache
+      run: |
+        php artisan config:clear
+        php artisan cache:clear
+        php artisan route:clear
+        php artisan view:clear
+        php artisan clear-compiled
 
-
-
-      - name: Generate Application Key
-        run: php artisan key:generate
-
-      - name: Set Permissions
-        run: chmod -R 777 storage bootstrap/cache database/database.sqlite
-
-      - name: Run Migrations
-        run: php artisan migrate --force
-
-      - name: Run Tests
-        run: php artisan test
+    - name: Run Tests (Unit and Feature tests) via PHPUnit/Pest
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
+      run: php artisan test
