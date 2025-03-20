@@ -32,12 +32,12 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Clear and Cache Configuration
-        run: |
-          php artisan config:clear
-          php artisan cache:clear
-          php artisan route:clear
-          php artisan view:clear
+#      - name: Clear and Cache Configuration
+#        run: |
+#          php artisan config:clear
+#          php artisan cache:clear
+#          php artisan route:clear
+#          php artisan view:clear
 
       - name: Set Permissions
         run: chmod -R 777 storage bootstrap/cache
