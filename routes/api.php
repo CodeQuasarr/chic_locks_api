@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\User\UserAddressController;
-use App\Http\Controllers\Api\v1\user\UserController;
+use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
