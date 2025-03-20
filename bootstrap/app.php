@@ -32,20 +32,22 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // Gestion explicite de AuthorizationException
+        $exceptions->render(function (AuthorizationException $exception, Request $request) {
+            return ApiResponse::error($exception->getMessage(), 'UNAUTHORIZED', Response::HTTP_UNAUTHORIZED);
+        });
+
+        // Gestion de AccessDeniedHttpException
+        $exceptions->render(function (AccessDeniedHttpException $exception, Request $request) {
+            return ApiResponse::error($exception->getMessage(), 'FORBIDDEN', Response::HTTP_FORBIDDEN);
+        });
+
         $exceptions->render(function (ValidationException $exception, Request $request) {
-            return ApiResponse::error( $exception->getMessage(), 'VALIDATION_ERROR', Response::HTTP_UNPROCESSABLE_ENTITY, $exception->errors()  );
+            return ApiResponse::error( $exception->getMessage(), 'VALIDATION_ERROR', Response::HTTP_UNPROCESSABLE_ENTITY);
         });
 
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
             return ApiResponse::error( 'Resource not found', 'NOT_FOUND', Response::HTTP_NOT_FOUND );
-        });
-
-        $exceptions->render(function (AuthorizationException $exception, Request $request) {
-            return ApiResponse::error( $exception->getMessage(), 'FORBIDDEN', Response::HTTP_FORBIDDEN );
-        });
-
-        $exceptions->render(function (AccessDeniedHttpException $exception, Request $request) {
-            return ApiResponse::error( $exception->getMessage(), 'UNAUTHORIZED', Response::HTTP_UNAUTHORIZED );
         });
 
         $exceptions->render(function (QueryException $exception, Request $request) {
