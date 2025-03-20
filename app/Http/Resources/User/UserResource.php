@@ -15,14 +15,23 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'users',
-            'id' => (string) $this->id,
-            'attributes' => [
-                'name' => $this->name,
-                'email' => $this->email,
-                'createdAt' => $this->created_at->toISOString(),
-                'updatedAt' => $this->updated_at->toISOString(),
-            ]
+            'data' => [
+                'type' => 'users',
+                'id' => (string) $this->id,
+                'attributes' => [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'role' => $this->getRoleNames(),
+                    'createdAt' => $this->created_at->toISOString(),
+                    'updatedAt' => $this->updated_at->toISOString(),
+                ],
+                'link' => [
+                    'self' => route('users.show', ['user' => $this->id]),
+                ],
+                'relationships' => [
+                    'addresses' => UserAddressResource::collection($this->addresses)
+                ]
+            ],
         ];
     }
 }

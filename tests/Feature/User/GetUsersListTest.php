@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\User;
-use App\Models\User\Role;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 beforeEach(
     function () {
@@ -38,11 +38,11 @@ test('Client can not get users', function () {
     Sanctum::actingAs($user);
     $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
 
-    $response->assertStatus(401);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
 });
 
 test('Guest can not get users', function () {
     $response = $this->get(route('users.index'), ['Accept' => 'application/json', 'Accept-Language' => 'en']);
 
-    $response->assertStatus(401);
+    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
 });
