@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserAddressStoreRequest;
+use App\Http\Resources\User\UserAddressResource;
 use App\Interfaces\User\UserAddressServiceInterface;
 use App\Models\User;
 use App\Models\User\UserAddress;
@@ -33,8 +34,9 @@ class UserAddressController extends Controller
         Gate::authorize('create', UserAddress::class);
 
 
-        $this->userAddressService->create($request->user(), $user, $request->all());
-        return response()->json(['message' => 'User address created'], 201);
+        $userAddress = $this->userAddressService->create($request->user(), $user, $request->all());
+
+        return ApiResponse::success(new UserAddressResource($userAddress), 201);
     }
 
     /**
