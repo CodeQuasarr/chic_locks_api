@@ -39,9 +39,7 @@ jobs:
 
     - name: Clear Laravel Cache
       run: |
-        php artisan cache:clear
         php artisan route:clear
-        php artisan view:clear
         php artisan clear-compiled
 
     - name: Run Tests (Unit and Feature tests) via PHPUnit/Pest
