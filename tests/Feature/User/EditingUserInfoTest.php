@@ -62,7 +62,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
             $this->userData,
             ['Accept' => 'application/json', 'Accept-Language' => 'en']
         );
-        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     });
 
     test('client can edit only their own information', function () {
@@ -82,5 +82,5 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
             $this->userData,
             ['Accept' => 'application/json', 'Accept-Language' => 'en']
         );
-        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     });

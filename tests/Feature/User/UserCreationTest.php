@@ -63,7 +63,7 @@ test('moderator user cannot create a user', function () {
         'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('users', [
         'email' => $this->userData['email'],
     ]);
@@ -78,7 +78,7 @@ test('non-admin user cannot create a user', function () {
         'Accept' => 'application/json', 'Accept-Language' => 'en'
     ]);
 
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('users', [
         'email' => $this->userData['email'],
     ]);

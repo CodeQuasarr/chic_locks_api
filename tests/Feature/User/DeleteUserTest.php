@@ -51,7 +51,7 @@ test('moderator can not delete their information and other users information', f
         [],
         ['Accept' => 'application/json', 'Accept-Language' => 'en']
     );
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
 
 
     $response = $this->delete(
@@ -59,7 +59,7 @@ test('moderator can not delete their information and other users information', f
         [],
         ['Accept' => 'application/json', 'Accept-Language' => 'en']
     );
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
 
 
     $response = $this->delete(
@@ -67,7 +67,7 @@ test('moderator can not delete their information and other users information', f
         [],
         ['Accept' => 'application/json', 'Accept-Language' => 'en']
     );
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
 });
 
 test('client can delete only their information', function () {
@@ -87,5 +87,5 @@ test('client can delete only their information', function () {
         [],
         ['Accept' => 'application/json', 'Accept-Language' => 'en']
     );
-    $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
 });

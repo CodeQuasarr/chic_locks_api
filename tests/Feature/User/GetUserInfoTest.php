@@ -60,7 +60,7 @@ describe('Managing user information', function () {
             route('users.show', ['user' => $this->admin->getKey()]),
             ['Accept' => 'application/json', 'Accept-Language' => 'en']
         );
-        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     });
 
     test('client can access only their own information', function () {
@@ -78,6 +78,6 @@ describe('Managing user information', function () {
             route('users.show', ['user' => $this->admin->getKey()]),
             ['Accept' => 'application/json', 'Accept-Language' => 'en']
         );
-        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+        $response->assertStatus(ResponseAlias::HTTP_FORBIDDEN);
     });
 });
