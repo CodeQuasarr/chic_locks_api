@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\User\UserAddressController;
 use App\Http\Controllers\Api\v1\user\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -21,4 +22,8 @@ require __DIR__.'/auth.php';
 Route::middleware('auth:sanctum')->group( function () {
     Route::apiResource('users', UserController::class);
     Route::delete('users/{user}', [UserController::class, 'delete'])->name('users.delete');
+
+    Route::prefix('users/{user}')->group(function () {
+        Route::apiResource('addresses', UserAddressController::class);
+    });
 });

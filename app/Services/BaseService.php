@@ -42,4 +42,9 @@ abstract class BaseService
         }
         return false;
     }
+
+    public function attach($model, $relation, $data): void
+    {
+        $model->$relation()->attach($data);
+    }
 }
