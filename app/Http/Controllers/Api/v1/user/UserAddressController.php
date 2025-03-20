@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Gate;
 class UserAddressController extends Controller
 {
 
-    public function __construct(private UserAddressServiceInterface $userAddressService)
+    public function __construct(private readonly UserAddressServiceInterface $userAddressService)
     {}
     /**
      * Display a listing of the resource.

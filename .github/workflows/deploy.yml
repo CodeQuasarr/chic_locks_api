@@ -27,20 +27,24 @@ jobs:
         run: composer install --no-progress --prefer-dist
 
       - name: Dump Autoload
-        run: composer dump-autoload -o  # Ensures all classes are autoloaded
+        run: composer dump-autoload -o  # Assure le chargement correct des classes
 
       - name: Generate Application Key
         run: php artisan key:generate
 
-#      - name: Clear and Cache Configuration
-#        run: |
-#          php artisan config:clear
-#          php artisan cache:clear
-#          php artisan route:clear
-#          php artisan view:clear
-
       - name: Set Permissions
         run: chmod -R 777 storage bootstrap/cache
+
+      - name: Clear and Rebuild Caches
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan clear-compiled
+
+      - name: Rebuild Config Cache
+        run: php artisan config:cache
 
       - name: Create SQLite Database
         run: |
