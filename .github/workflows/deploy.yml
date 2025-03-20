@@ -40,30 +40,22 @@ jobs:
           php artisan config:clear
           php artisan cache:clear
           php artisan route:clear
+          php artisan view:clear
           php artisan clear-compiled
-
-      - name: Optimize Laravel
-        run: php artisan optimize:clear
-
-      - name: Generate Application Key
-        run: php artisan key:generate
-
-      - name: Set Permissions
-        run: chmod -R 777 storage bootstrap/cache
 
       - name: Create SQLite Database
         run: |
           mkdir -p database
           touch database/database.sqlite
 
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Set Permissions
+        run: chmod -R 777 storage bootstrap/cache database/database.sqlite
+
       - name: Run Migrations
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
         run: php artisan migrate --force
 
       - name: Run Tests
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
         run: php artisan test
