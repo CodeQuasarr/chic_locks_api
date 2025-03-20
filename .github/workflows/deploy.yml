@@ -35,6 +35,17 @@ jobs:
       - name: Dump Autoload
         run: composer dump-autoload -o
 
+      - name: Clear Laravel Cache
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan clear-compiled
+
+      - name: Optimize Laravel
+        run: php artisan optimize:clear
+
       - name: Generate Application Key
         run: php artisan key:generate
 
