@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Authentication;
+namespace App\Http\Controllers\Api\V1\Authentication;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Interfaces\Auth\LoginServiceInterface;
 use App\Interfaces\Auth\RegisterServiceInterface;
-use App\Interfaces\Auth\TokenServiceInterface;
 use App\Models\User\Role;
 use App\Responses\ApiResponse;
-use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {

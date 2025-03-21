@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Authentication;
+namespace App\Http\Controllers\Api\V1\Authentication;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -72,24 +72,6 @@ class LoginController extends Controller
         $user = $request->user();
 
         return ApiResponse::success(new UserResource($user), 201);
-
-//        return ApiResponse::success([
-//            'data' => [
-//                'type' => 'users',
-//                'id' => $user->getKey(),
-//                'attributes' => [
-//                    'name' => $user->name,
-//                    'email' => $user->email,
-//                    'role' => $user->getRoleNames(),
-//                ],
-//                'links' => [
-//                    'self' => 'users/' . $user->getKey()
-//                ]
-//            ],
-//            'meta' => [
-//                'message' => 'Utilisateur authentifié'
-//            ]
-//        ], 200);
     }
 
     public function refresh(Request $request): JsonResponse

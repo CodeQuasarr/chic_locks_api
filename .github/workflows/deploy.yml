@@ -42,6 +42,9 @@ jobs:
         php artisan route:clear
         php artisan clear-compiled
 
+    - name: Dump Autoload
+      run: composer dump-autoload --optimize
+
     - name: Run Tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite

@@ -19,7 +19,7 @@ Route::get('/sanctum/csrf-cookie', function (Request $request) {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('me', [\App\Http\Controllers\Api\v1\Authentication\LoginController::class, 'me'])->name('user.login_info');
+    Route::get('me', [\App\Http\Controllers\Api\V1\Authentication\LoginController::class, 'me'])->name('user.login_info');
     Route::apiResource('users', \App\Http\Controllers\Api\V1\User\UserController::class);
     Route::delete('users/{user}', [\App\Http\Controllers\Api\V1\User\UserController::class, 'delete'])->name('users.delete');
 
