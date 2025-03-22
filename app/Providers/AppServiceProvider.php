@@ -4,9 +4,9 @@ namespace App\Providers;
 
 
 use App\Models\User;
-use App\Models\User\UserAddress;
-use App\Policies\User\UserAddressPolicy;
-use App\Policies\User\UserPolicy;
+use App\Models\Users\UserAddress;
+use App\Policies\Users\UserAddressPolicy;
+use App\Policies\Users\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -44,13 +44,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Interfaces\User\UserServiceInterface::class,
-            \App\Services\User\UserService::class
+            \App\Interfaces\Users\UserServiceInterface::class,
+            \App\Services\Users\UserService::class
         );
 
         $this->app->bind(
-            \App\Interfaces\User\UserAddressServiceInterface::class,
-            \App\Services\User\UserAddressService::class
+            \App\Interfaces\Users\UserAddressServiceInterface::class,
+            \App\Services\Users\UserAddressService::class
         );
     }
 

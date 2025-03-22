@@ -3,11 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\User\Role;
+use App\Models\Users\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\This;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>

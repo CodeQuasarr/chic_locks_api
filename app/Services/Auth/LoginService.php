@@ -4,9 +4,6 @@ namespace App\Services\Auth;
 
 use App\Interfaces\Auth\LoginServiceInterface;
 use App\Models\User;
-use App\Repositories\User\UserRepository;
-use App\Services\User\UserService;
-use Exception;
 use RuntimeException;
 
 class LoginService implements LoginServiceInterface

@@ -4,9 +4,9 @@ namespace App\Services\Auth;
 
 use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Models\User;
-use App\Repositories\User\UserRepository;
+use App\Repositories\Users\UserRepository;
 use App\Services\BaseService;
-use App\Services\User\UserService;
+use App\Services\Users\UserService;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 

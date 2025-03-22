@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use App\Models\User\Permission;
-use App\Models\User\Role;
+use App\Models\Users\Permission;
+use App\Models\Users\Role;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

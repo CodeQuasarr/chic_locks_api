@@ -1,52 +1,44 @@
-name: Laravel Tests
+name: Laravel CI
 
 on:
   push:
-    branches: [ "develop" ]
+    branches:
+      - develop
   pull_request:
-    branches: [ "develop" ]
+    branches:
+      - develop
 
 jobs:
-  laravel-tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # Étape 1 : Checkout du code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, pdo, sqlite
+      # Étape 2 : Configurer PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Compatible avec Laravel 11
+          extensions: mbstring, dom, fileinfo, sqlite, curl, zip
+          coverage: xdebug # Optionnel pour la couverture de code
 
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      # Étape 3 : Installer les dépendances Composer
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      # Étape 4 : Configurer le fichier .env
+      - name: Set up environment file
+        run: |
+          cp .env.example .env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
 
-    - name: Generate Application Key
-      run: php artisan key:generate
+      # Étape 5 : Générer une clé d'application (si non fournie)
+      - name: Generate application key
+        run: php artisan key:generate || true
 
-    - name: Set Permissions
-      run: chmod -R 777 storage bootstrap/cache
-
-    - name: Create SQLite Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-
-    - name: Clear Laravel Cache
-      run: |
-        php artisan route:clear
-        php artisan clear-compiled
-
-    - name: Dump Autoload
-      run: composer dump-autoload --optimize
-
-    - name: Run Tests (Unit and Feature tests) via PHPUnit/Pest
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan test
+      # Étape 6 : Exécuter les tests Pest
+      - name: Run Pest tests
+        run: php artisan test
