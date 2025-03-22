@@ -29,13 +29,13 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      # Étape 4 : Générer une clé d'application Laravel
-      - name: Generate Laravel application key
-        run: php artisan key:generate
-
-      # Étape 5 : Exécuter les migrations (si nécessaire)
-      - name: Run migrations
-        run: php artisan migrate:fresh --env=testing --force
+#      # Étape 4 : Générer une clé d'application Laravel
+#      - name: Generate Laravel application key
+#        run: php artisan key:generate
+#
+#      # Étape 5 : Exécuter les migrations (si nécessaire)
+#      - name: Run migrations
+#        run: php artisan migrate:fresh --env=testing --force
 
       # Étape 6 : Exécuter les tests Pest
       - name: Run Pest tests
