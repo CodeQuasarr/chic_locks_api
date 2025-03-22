@@ -21,21 +21,23 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # Utilise la version de PHP compatible avec Laravel 11
-          extensions: mbstring, dom, fileinfo, sqlite, curl, zip # Extensions nécessaires
-          coverage: xdebug # Optionnel pour les rapports de couverture de code
+          php-version: '8.2' # Compatible avec Laravel 11
+          extensions: mbstring, dom, fileinfo, sqlite, curl, zip
+          coverage: xdebug # Optionnel pour la couverture de code
 
       # Étape 3 : Installer les dépendances Composer
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-#      # Étape 4 : Générer une clé d'application Laravel
-#      - name: Generate Laravel application key
-#        run: php artisan key:generate
-#
-#      # Étape 5 : Exécuter les migrations (si nécessaire)
-#      - name: Run migrations
-#        run: php artisan migrate:fresh --env=testing --force
+      # Étape 4 : Configurer le fichier .env
+      - name: Set up environment file
+        run: |
+          cp .env.example .env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+
+      # Étape 5 : Générer une clé d'application (si non fournie)
+      - name: Generate application key
+        run: php artisan key:generate || true
 
       # Étape 6 : Exécuter les tests Pest
       - name: Run Pest tests
