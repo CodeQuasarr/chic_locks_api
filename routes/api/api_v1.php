@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
+Route::post('/create-payment-intent', [\App\Http\Controllers\Api\V1\Payments\PaymentStripeController::class, 'createPaymentIntent']);
+
 Route::middleware('auth:sanctum')->group( function () {
     Route::get('me', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'me'])->name('user.login_info');
     Route::apiResource('users', \App\Http\Controllers\Api\V1\Users\UserController::class);
