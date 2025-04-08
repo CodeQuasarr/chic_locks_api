@@ -1,19 +1,28 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Payments\PaymentStripeController;
+use App\Http\Controllers\Api\V1\Products\ProductController;
+use App\Http\Controllers\Api\V1\Users\UserAddressController;
+use App\Http\Controllers\Api\V1\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
 
 
 require __DIR__.'/auth.php';
 
-Route::post('/create-payment-intent', [\App\Http\Controllers\Api\V1\Payments\PaymentStripeController::class, 'createPaymentIntent']);
+Route::post('/create-payment-intent', [PaymentStripeController::class, 'createPaymentIntent']);
 
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/{product}', [ProductController::class, 'show'])->name('products.show');
+});
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('me', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'me'])->name('user.login_info');
-    Route::apiResource('users', \App\Http\Controllers\Api\V1\Users\UserController::class);
-    Route::delete('users/{user}', [\App\Http\Controllers\Api\V1\Users\UserController::class, 'delete'])->name('users.delete');
+    Route::get('me', [LoginController::class, 'me'])->name('user.login_info');
+    Route::apiResource('users', UserController::class);
+    Route::delete('users/{user}', [UserController::class, 'delete'])->name('users.delete');
 
     Route::prefix('users/{user}')->group(function () {
-        Route::apiResource('addresses', \App\Http\Controllers\Api\V1\Users\UserAddressController::class);
+        Route::apiResource('addresses', UserAddressController::class);
     });
 });

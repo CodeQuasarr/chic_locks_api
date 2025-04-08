@@ -52,6 +52,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\Users\UserAddressServiceInterface::class,
             \App\Services\Users\UserAddressService::class
         );
+
+        $this->app->bind(
+            \App\Interfaces\Products\ProductServiceInterface::class,
+            \App\Services\Products\ProductService::class
+        );
     }
 
     /**
