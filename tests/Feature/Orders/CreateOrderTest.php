@@ -17,10 +17,6 @@ beforeEach(function () {
     $this->admin = User::factory()->admin()->create();
     $this->client = User::factory()->client()->create();
     $this->moderator = User::factory()->moderator()->create();
-
-    $this->userData = User::factory()->make()->toArray();
-    $this->userData['password'] = 'password';
-    $this->userData['password_confirmation'] = 'password';
 });
 
 test('all role can create order', function () {
@@ -29,6 +25,7 @@ test('all role can create order', function () {
     $response = post(
         route('orders.store'),
         [
+            'status' => 'paid',
             'amount' => 100,
             'payment_intent_id' => 'pi_123456789',
             'payment_status' => 'succeeded',
@@ -40,6 +37,7 @@ test('all role can create order', function () {
 
     $response->assertStatus(ResponseAlias::HTTP_CREATED);
     $this->assertDatabaseHas('orders', [
+        'status' => 'paid',
         'amount' => 100,
         'payment_intent_id' => 'pi_123456789',
         'payment_status' => 'succeeded',
@@ -54,7 +52,6 @@ test('all roles can create order', function () {
         $this->client,
         $this->moderator,
     ];
-    $roles = ['user', 'admin', 'moderator'];
 
     $orderData = [
         'status' => 'pending',
@@ -96,7 +93,13 @@ test('unauthenticated user cannot create order', function () {
         'payment_method' => 'credit_card',
     ];
 
-    $response = $this->postJson(route('orders.store'), $orderData);
+    $response = post(
+        route('orders.store'),
+        $orderData, [
+            'Accept' => 'application/json',
+            'Accept-Language' => 'en'
+        ]
+    );
 
     $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
 });

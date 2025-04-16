@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 
+use App\Models\Order;
 use App\Models\User;
 use App\Models\Users\UserAddress;
+use App\Policies\Orders\OrderPolicy;
 use App\Policies\Users\UserAddressPolicy;
 use App\Policies\Users\UserPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => UserPolicy::class,
         UserAddress::class => UserAddressPolicy::class,
+        Order::class => OrderPolicy::class,
     ];
 
     /**
@@ -56,6 +59,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Interfaces\Products\ProductServiceInterface::class,
             \App\Services\Products\ProductService::class
+        );
+
+        $this->app->bind(
+            \App\Interfaces\Orders\OrderServiceInterface::class,
+            \App\Services\Orders\OrderService::class
         );
     }
 
