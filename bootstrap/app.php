@@ -47,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
+            dd($exception);
             return ApiResponse::error( 'Resource not found', 'NOT_FOUND', Response::HTTP_NOT_FOUND );
         });
 

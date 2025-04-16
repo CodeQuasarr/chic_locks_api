@@ -14,6 +14,7 @@ require __DIR__.'/auth.php';
 Route::post('/create-payment-intent', [PaymentStripeController::class, 'createPaymentIntent']);
 
 Route::prefix('products')->group(function () {
+    Route::get('/check-stocks', [ProductController::class, 'checkStock'])->name('products.checkStock');
     Route::get('/', [ProductController::class, 'index'])->name('products.index');
     Route::get('/{product}', [ProductController::class, 'show'])->name('products.show');
 });
