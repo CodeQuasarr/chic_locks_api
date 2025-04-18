@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
+use App\Http\Controllers\Api\V1\Orders\OrderItemController;
 use App\Http\Controllers\Api\V1\Payments\PaymentStripeController;
 use App\Http\Controllers\Api\V1\Products\ProductController;
 use App\Http\Controllers\Api\V1\Users\UserAddressController;
@@ -21,12 +22,16 @@ Route::prefix('products')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('me', [LoginController::class, 'me'])->name('user.login_info');
     Route::apiResource('users', UserController::class);
     Route::apiResource('orders', OrderController::class);
+    Route::get('me', [LoginController::class, 'me'])->name('user.login_info');
     Route::delete('users/{user}', [UserController::class, 'delete'])->name('users.delete');
 
     Route::prefix('users/{user}')->group(function () {
         Route::apiResource('addresses', UserAddressController::class);
+    });
+
+    Route::prefix('orders/{order}')->group(function () {
+        Route::apiResource('items', OrderItemController::class);
     });
 });

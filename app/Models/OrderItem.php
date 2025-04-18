@@ -5,11 +5,9 @@ namespace App\Models;
 use App\Traits\GlobalTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Order extends Model
+class OrderItem extends Model
 {
-
     use HasFactory, GlobalTrait;
 
     /**
@@ -18,11 +16,6 @@ class Order extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'user_id', 'status', 'payment_intent_id', 'amount', 'payment_status', 'payment_address','payment_method',
+        'order_id', 'product_id', 'quantity', 'price_at_time'
     ];
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources\Orders;
 
+use App\Http\Resources\Products\ProductResource;
 use App\Http\Resources\Users\UserAddressResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderResource extends JsonResource
+class OrderItemsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,20 +18,19 @@ class OrderResource extends JsonResource
     {
         return [
             'data' => [
-                'type' => 'orders',
+                'type' => 'order_items',
                 'id' => (string) $this->id,
                 'attributes' => [
-                    'status' => $this->status,
-                    'payment_intent_id' => $this->payment_intent_id,
-                    'amount' => $this->amount,
-                    'payment_status' => $this->payment_status,
-                    'payment_address' => $this->payment_address,
-                    'payment_method' => $this->payment_method,
+                    'quantity' => $this->quantity,
+                    'price_at_time' => $this->price_at_time,
                     'createdAt' => $this->created_at->toISOString(),
                 ],
                 'link' => [
                     'self' => "----------------------",
                 ],
+                'relationships' => [
+                    'product' => ProductResource::collection($this->product)
+                ]
             ],
         ];
     }
