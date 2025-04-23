@@ -15,22 +15,24 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        return [ 'data' => $this->transformDataOnly($request),];
+    }
+
+    public function transformDataOnly(Request $request): array
+    {
         return [
-            'data' => [
-                'type' => 'products',
-                'id' => (string) $this->id,
-                'attributes' => [
-                    'name' => $this->name,
-                    'description' => $this->description,
-                    'price' => $this->price,
-                    'slug' => $this->slug,
-                    'stock' => $this->stock,
-                    'createdAt' => $this->created_at->toISOString(),
-                    'updatedAt' => $this->updated_at->toISOString(),
-                ],
-                'link' => [
-                    'self' => route('products.show', ['product' => $this->id]),
-                ],
+            'type' => 'products',
+            'id' => (string) $this->id,
+            'attributes' => [
+                'name' => $this->name,
+                'description' => $this->description,
+                'price' => $this->price,
+                'slug' => $this->slug,
+                'stock' => $this->stock,
+                'createdAt' => $this->created_at->toISOString(),
+            ],
+            'link' => [
+                'self' => route('products.show', ['product' => $this->id]),
             ],
         ];
     }

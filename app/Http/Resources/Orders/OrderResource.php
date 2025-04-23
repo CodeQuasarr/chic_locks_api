@@ -15,22 +15,28 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        return [ 'data' => $this->transformDataOnly($request),];
+    }
+
+    public function transformDataOnly(Request $request): array
+    {
         return [
-            'data' => [
-                'type' => 'orders',
-                'id' => (string) $this->id,
-                'attributes' => [
-                    'status' => $this->status,
-                    'payment_intent_id' => $this->payment_intent_id,
-                    'amount' => $this->amount,
-                    'payment_status' => $this->payment_status,
-                    'payment_address' => $this->payment_address,
-                    'payment_method' => $this->payment_method,
-                    'createdAt' => $this->created_at->toISOString(),
-                ],
-                'link' => [
-                    'self' => "----------------------",
-                ],
+            'type' => 'orders',
+            'id' => (string) $this->id,
+            'attributes' => [
+                'status' => $this->status,
+                'payment_intent_id' => $this->payment_intent_id,
+                'amount' => $this->amount,
+                'payment_status' => $this->payment_status,
+                'payment_address' => $this->payment_address,
+                'payment_method' => $this->payment_method,
+                'createdAt' => $this->created_at->toISOString(),
+            ],
+            'relationships' => [
+                'order_items' => OrderItemResource::collection($this->whenLoaded('items')),
+            ],
+            'link' => [
+                'self' => route('orders.show', $this->id),
             ],
         ];
     }

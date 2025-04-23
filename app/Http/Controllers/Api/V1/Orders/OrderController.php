@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Orders;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Orders\OrderCollection;
 use App\Http\Resources\Orders\OrderResource;
 use App\Interfaces\Orders\OrderServiceInterface;
 use App\Models\Order;
@@ -21,9 +22,14 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $orders = $request->user()
+            ->orders()
+            ->with(['items.product']) // précharge order_items et les products liés
+            ->get();
+
+        return ApiResponse::success(new OrderCollection($orders));
     }
 
     /**

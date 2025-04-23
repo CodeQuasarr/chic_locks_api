@@ -14,10 +14,13 @@ class OrderCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+
         return [
-            'data' => $this->collection,
+            'data' => $this->collection->map(function ($order) use ($request) {
+                return (new OrderResource($order))->transformDataOnly($request);
+            }),
             'links' => [
-                'self' => 'link-value',
+                'self' => url()->current(),
             ],
         ];
     }

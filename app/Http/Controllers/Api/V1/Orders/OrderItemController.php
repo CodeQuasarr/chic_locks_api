@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Orders\OrderCollection;
+use App\Http\Resources\Orders\OrderItemResource;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Responses\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
@@ -22,19 +24,19 @@ class OrderItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Order $order)
+    public function store(Request $request, Order $order): JsonResponse
     {
-        $items = $request->all();
+        $items = collect($request->all());
 
-        foreach ($items as $item) {
-            $order->items()->create([
+        $createdItems = $items->map(function ($item) use ($order) {
+            return $order->items()->create([
                 'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
                 'price_at_time' => $item['price_at_time'],
             ]);
-        }
+        });
 
-        return ApiResponse::success(new OrderCollection($order->items), 201);
+        return ApiResponse::success( OrderItemResource::collection($createdItems) );
 
     }
 
