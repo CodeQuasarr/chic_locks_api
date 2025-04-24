@@ -30,9 +30,8 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
         }
 
         if ($data['is_default'] && $user->addresses()->where('is_default', true)->exists()) {
-            $validator = Validator::make([], []); // Créer un validateur vide
-            $validator->errors()->add('is_default', 'You can only have one default address.'); // Ajouter une erreur
-            throw new ValidationException($validator);
+            // remove the default address from the previous one
+            $user->addresses()->where('is_default', true)->update(['is_default' => false]);
         }
 
         $fields = $this->getModelFields($this->userAddressRepository->getInstanceOfUser(), collect($data));
