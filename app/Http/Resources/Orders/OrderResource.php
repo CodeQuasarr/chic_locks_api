@@ -30,7 +30,7 @@ class OrderResource extends JsonResource
                 'payment_status' => $this->payment_status,
                 'payment_address' => $this->payment_address,
                 'payment_method' => $this->payment_method,
-                'createdAt' => $this->created_at->toISOString(),
+                'created_at' => $this->created_at->toISOString(),
             ],
             'relationships' => [
                 'order_items' => OrderItemResource::collection($this->whenLoaded('items')),

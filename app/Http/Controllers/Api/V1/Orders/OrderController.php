@@ -8,6 +8,7 @@ use App\Http\Resources\Orders\OrderResource;
 use App\Interfaces\Orders\OrderServiceInterface;
 use App\Models\Order;
 use App\Responses\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,6 +28,7 @@ class OrderController extends Controller
         $orders = $request->user()
             ->orders()
             ->with(['items.product']) // précharge order_items et les products liés
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return ApiResponse::success(new OrderCollection($orders));
@@ -35,7 +37,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
 
         Gate::authorize('create', Order::class);

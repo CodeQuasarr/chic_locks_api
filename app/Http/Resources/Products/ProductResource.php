@@ -29,7 +29,7 @@ class ProductResource extends JsonResource
                 'price' => $this->price,
                 'slug' => $this->slug,
                 'stock' => $this->stock,
-                'createdAt' => $this->created_at->toISOString(),
+                'created_at' => $this->created_at->toISOString(),
             ],
             'link' => [
                 'self' => route('products.show', ['product' => $this->id]),
